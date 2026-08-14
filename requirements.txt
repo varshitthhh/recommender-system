@@ -11,3 +11,6 @@ scipy
 scikit-learn
 implicit
 xgboost
+dvc
+mlflow
+gradio

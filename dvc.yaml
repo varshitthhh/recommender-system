@@ -1,0 +1,52 @@
+stages:
+  prepare:
+    cmd: python -m nbconvert --to notebook --execute --inplace notebooks/01_eda.ipynb
+    deps:
+      - data/raw/events.csv
+      - data/raw/item_properties_part1.csv
+      - data/raw/item_properties_part2.csv
+      - data/raw/category_tree.csv
+      - notebooks/01_eda.ipynb
+    outs:
+      - data/processed/interactions.parquet
+
+  split:
+    cmd: python -m nbconvert --to notebook --execute --inplace notebooks/02_baseline.ipynb
+    deps:
+      - data/processed/interactions.parquet
+      - notebooks/02_baseline.ipynb
+      - src/baseline.py
+      - src/evaluate.py
+    outs:
+      - data/processed/train.parquet
+      - data/processed/val.parquet
+      - data/processed/test.parquet
+      - data/processed/split_dates.json
+    metrics:
+      - data/processed/baseline_metrics.json:
+          cache: false
+
+  train:
+    cmd: python -m nbconvert --to notebook --execute --inplace notebooks/03_model.ipynb
+    deps:
+      - data/processed/train.parquet
+      - data/processed/val.parquet
+      - notebooks/03_model.ipynb
+      - src/features.py
+      - src/recommender.py
+    outs:
+      - data/processed/als_model.pkl
+      - data/processed/itemcf_matrix.pkl
+      - data/processed/id_mappings.pkl
+      - data/processed/candidates.parquet
+
+  rank:
+    cmd: python -m nbconvert --to notebook --execute --inplace notebooks/03b_ranking.ipynb
+    deps:
+      - data/processed/candidates.parquet
+      - data/processed/als_model.pkl
+      - notebooks/03b_ranking.ipynb
+      - src/ranker.py
+    outs:
+      - data/processed/xgboost_ranker.pkl
+      - data/processed/final_recs_val.parquet

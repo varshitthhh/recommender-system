@@ -4,3 +4,26 @@ dataset:
   processed_dir: data/processed
 
 K: 10
+
+split:
+  train_pct: 0.80
+  val_pct: 0.10
+  test_pct: 0.10
+
+als:
+  factors: 50
+  iterations: 20
+  regularization: 0.1
+
+itemcf:
+  top_n: 20
+
+candidates:
+  pool_size: 50
+  alpha_grid: [0.5, 0.6, 0.7]
+
+xgboost:
+  objective: binary:logistic
+  max_depth: 5
+  n_estimators: 200
+  learning_rate: 0.1

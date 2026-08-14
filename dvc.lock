@@ -1,0 +1,142 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python -m nbconvert --to notebook --execute --inplace 
+      notebooks/01_eda.ipynb
+    deps:
+    - path: data/raw/category_tree.csv
+      hash: md5
+      md5: f0e1eb878ae66209004112f6355d7e83
+      size: 14454
+    - path: data/raw/events.csv
+      hash: md5
+      md5: fddaf7c1c6a9df23a726500a08ffdd7e
+      size: 94237913
+    - path: data/raw/item_properties_part1.csv
+      hash: md5
+      md5: cb43a0682a1af76f1c1b60f9163ae47b
+      size: 484315749
+    - path: data/raw/item_properties_part2.csv
+      hash: md5
+      md5: e74ec953e7b192920b195dfd82dc2a4e
+      size: 408929907
+    - path: notebooks/01_eda.ipynb
+      hash: md5
+      md5: 0e5f3bdb0b592c23ce2afd98e3098113
+      size: 132853
+    outs:
+    - path: data/processed/interactions.parquet
+      hash: md5
+      md5: 1a99a1a3ec6286df4c669f3618fbe5de
+      size: 58432460
+  split:
+    cmd: python -m nbconvert --to notebook --execute --inplace 
+      notebooks/02_baseline.ipynb
+    deps:
+    - path: data/processed/interactions.parquet
+      hash: md5
+      md5: 1a99a1a3ec6286df4c669f3618fbe5de
+      size: 58432460
+    - path: notebooks/02_baseline.ipynb
+      hash: md5
+      md5: 561d62c80e2b4f7c13ea0864996fd976
+      size: 20213
+    - path: src/baseline.py
+      hash: md5
+      md5: ed6b4e443fb155b118dbb6a32b867987
+      size: 2868
+    - path: src/evaluate.py
+      hash: md5
+      md5: 84fc56b6e77ffcbbb92fe35e6f9f3455
+      size: 1204
+    outs:
+    - path: data/processed/baseline_metrics.json
+      hash: md5
+      md5: ad453d6f4b998d246052bfc503a97863
+      size: 226
+    - path: data/processed/split_dates.json
+      hash: md5
+      md5: 1dd32ab92ccf224e57373376218391e2
+      size: 61
+    - path: data/processed/test.parquet
+      hash: md5
+      md5: 75a8adc9ae35a9c7757fa862df0cd180
+      size: 6419792
+    - path: data/processed/train.parquet
+      hash: md5
+      md5: 2b2c1b99b49bf9a6b9b39753760dff67
+      size: 47045398
+    - path: data/processed/val.parquet
+      hash: md5
+      md5: 58c7c87b16cf16e684226b1d6ebfff09
+      size: 6418359
+  train:
+    cmd: python -m nbconvert --to notebook --execute --inplace 
+      notebooks/03_model.ipynb
+    deps:
+    - path: data/processed/train.parquet
+      hash: md5
+      md5: 2b2c1b99b49bf9a6b9b39753760dff67
+      size: 47045398
+    - path: data/processed/val.parquet
+      hash: md5
+      md5: 58c7c87b16cf16e684226b1d6ebfff09
+      size: 6418359
+    - path: notebooks/03_model.ipynb
+      hash: md5
+      md5: 5671775f502b36c6376fb9182b5182b3
+      size: 68367
+    - path: src/features.py
+      hash: md5
+      md5: f68564ce24110c3c66b7c9eb3d36dba7
+      size: 4763
+    - path: src/recommender.py
+      hash: md5
+      md5: 6e177f36480e8b1535557d8ebcba3cd2
+      size: 3426
+    outs:
+    - path: data/processed/als_model.pkl
+      hash: md5
+      md5: 6c3c74b3108fffd1a2ed3efc89a10bbf
+      size: 267336536
+    - path: data/processed/candidates.parquet
+      hash: md5
+      md5: 6013523ced5b25e17a0b17e83a17a803
+      size: 9113590
+    - path: data/processed/id_mappings.pkl
+      hash: md5
+      md5: e01edb9c791b9d39d62461a6f2e89d2a
+      size: 42518457
+    - path: data/processed/itemcf_matrix.pkl
+      hash: md5
+      md5: f647fc18fbb9192b318611cf515f643d
+      size: 20238581
+  rank:
+    cmd: python -m nbconvert --to notebook --execute --inplace 
+      notebooks/03b_ranking.ipynb
+    deps:
+    - path: data/processed/als_model.pkl
+      hash: md5
+      md5: 6c3c74b3108fffd1a2ed3efc89a10bbf
+      size: 267336536
+    - path: data/processed/candidates.parquet
+      hash: md5
+      md5: 6013523ced5b25e17a0b17e83a17a803
+      size: 9113590
+    - path: notebooks/03b_ranking.ipynb
+      hash: md5
+      md5: ba03978192352c249f8dbc61b8f96279
+      size: 17681
+    - path: src/ranker.py
+      hash: md5
+      md5: 3edc5d551c4920f4e15767a6d01ef42d
+      size: 2739
+    outs:
+    - path: data/processed/final_recs_val.parquet
+      hash: md5
+      md5: 1d3cf6b8ffb1cc6c0d6698d7865eb1ed
+      size: 1504053
+    - path: data/processed/xgboost_ranker.pkl
+      hash: md5
+      md5: cb5b6857249268db0537e46e50745901
+      size: 366412
