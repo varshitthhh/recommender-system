@@ -1,0 +1,6 @@
+dataset:
+  name: retailrocket
+  raw_dir: data/raw
+  processed_dir: data/processed
+
+K: 10

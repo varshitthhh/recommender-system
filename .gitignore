@@ -1,0 +1,13 @@
+data/raw/
+data/processed/
+*.pkl
+*.pyc
+__pycache__/
+.ipynb_checkpoints/
+mlruns/
+.venv/
+venv/
+*.egg-info/
+.DS_Store
+.pytest_cache/
+*.log
