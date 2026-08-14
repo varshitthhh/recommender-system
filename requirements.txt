@@ -7,3 +7,7 @@ jupyter
 nbconvert
 ipykernel
 pytest
+scipy
+scikit-learn
+implicit
+xgboost
